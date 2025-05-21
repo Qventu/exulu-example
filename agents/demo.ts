@@ -19,7 +19,8 @@ export const demoAgent = new ExuluAgent({
   },
   // outputSchema: z.object({
   //     name: z.string()
-  // }),
+  // }),  
+  tools: [ contexts.faqs.tool( )],
   config: {
     name: "Demo Agent",
     instructions: "You are a helpful assistant.",

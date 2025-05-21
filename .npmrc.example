@@ -1,0 +1,3 @@
+engine-strict=true
+@exulu:registry=https://registry.npmjs.org/
+//registry.npmjs.org/:_authToken=<<PUT_YOUR_TOKEN_HERE>>
