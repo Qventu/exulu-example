@@ -1,0 +1,1 @@
+export { default as minilm_l6_v2 } from "./minilm-l6-v2.ts";
