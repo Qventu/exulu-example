@@ -1,4 +1,4 @@
-import { ExuluContext } from "exulu";
+import { ExuluContext } from "@exulu/backend";
 import { minilmEmbedder } from "../embedders/minilm-l6-v2.ts";
 
 const faqs = new ExuluContext({

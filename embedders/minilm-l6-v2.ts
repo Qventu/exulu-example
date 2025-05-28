@@ -1,4 +1,4 @@
-import { ExuluEmbedder } from "exulu";
+import { ExuluEmbedder } from "@exulu/backend";
 import { pipeline } from "@xenova/transformers";
 
 export const minilmEmbedder = new ExuluEmbedder({

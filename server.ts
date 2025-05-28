@@ -1,6 +1,6 @@
 import express from "express";
-import { type Request, type Response} from "express";
-import {exulu} from "./exulu.ts";
+import { type Request, type Response } from "express";
+import { exulu } from "./exulu.ts";
 const bodyParser = require('body-parser');
 import cors from "cors";
 

@@ -1,4 +1,4 @@
-import { ExuluAgent, ExuluWorkflow, ExuluQueues } from "exulu";
+import { ExuluAgent, ExuluWorkflow, ExuluQueues } from "@exulu/backend";
 import { z } from "zod"
 import { Workflow as MastraWorkflow, Step } from "@mastra/core";
 import { openai } from "@ai-sdk/openai";
@@ -106,7 +106,7 @@ export const demoFlow = new ExuluWorkflow({
   description: "Lorem ipsum.",
   inputSchema: inputSchemaSimple,
   workflow: createWorkflow(),
-  queue: ExuluQueues.use("flows"),
+  // queue: ExuluQueues.use("flows"),
   enable_batch: true
 })
 

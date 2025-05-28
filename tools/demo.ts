@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ExuluTool } from "exulu";
+import { ExuluTool } from "@exulu/backend";
 
 const demoTool = new ExuluTool({
     id: `1234-5678-9123-4567`,

@@ -1,4 +1,4 @@
-import { ExuluWorkflow, ExuluZodFileType, ExuluQueues } from "exulu";
+import { ExuluWorkflow, ExuluZodFileType, ExuluQueues } from "@exulu/backend";
 import { Workflow as MastraWorkflow, Step } from "@mastra/core";
 import Groq from "groq-sdk";
 import { contexts } from "@EXULU_CONTEXTS";
@@ -168,7 +168,7 @@ export const transcriberFlow = new ExuluWorkflow({
     description: "Generates an srt transcription file, closed caption file, and a blog article based on a provided video.",
     inputSchema: inputSchema,
     workflow: createWorkflow(),
-    queue: ExuluQueues.use("transcription"),
+    // queue: ExuluQueues.use("transcription"),
     enable_batch: true
 })
 

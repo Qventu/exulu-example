@@ -1,4 +1,4 @@
-import {ExuluApp} from "exulu";
+import {ExuluApp} from "@exulu/backend";
 import { contexts } from "./contexts";
 import {demoAgent, demoFlow} from "./agents/demo.ts";
 import { transcriberFlow } from "./agents/transcriber.ts";

@@ -1,5 +1,5 @@
 import demo from "./demo.ts";
-import type { ExuluTool } from "exulu";
+import type { ExuluTool } from "@exulu/backend";
 
 const tools: ExuluTool[] = [
     demo
