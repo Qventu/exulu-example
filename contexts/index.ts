@@ -1,4 +1,4 @@
-import {faqs} from "./demo.ts";
+import {videoSeries} from "./demo.ts";
 export const contexts = {
-    faqs
+    videoSeries
 }

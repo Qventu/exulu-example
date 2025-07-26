@@ -7,31 +7,35 @@
     "node": "20.10.0"
   },
   "scripts": {
-    "dev": "bun --watch server.ts",
-    "worker": "bun --watch worker.ts"
+    "dev": "tsx watch server.ts",
+    "init-db": "tsx init-db.ts",
+    "cli": "tsx cli.ts",
+    "evals": "tsx evals.ts",
+    "workers": "tsx watch workers.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/node": "^22.14.0",
     "@types/pg": "^8.15.1",
-    "mastra": "^0.4.4",
-    "tsx": "^4.19.3"
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
   },
   "peerDependencies": {
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^1.2.12",
+    "@ai-sdk/google": "^1.2.18",
     "@ai-sdk/groq": "^1.2.8",
+    "@ai-sdk/mistral": "^1.2.8",
     "@ai-sdk/openai": "^1.3.18",
     "@as-integrations/express5": "^1.0.0",
     "@auth/mongodb-adapter": "^3.8.0",
     "@aws-sdk/client-s3": "^3.338.0",
     "@aws-sdk/client-sts": "^3.338.0",
     "@aws-sdk/s3-request-presigner": "^3.338.0",
-    "@mastra/core": "^0.8.3",
-    "@mastra/memory": "^0.2.10",
-    "@mastra/pg": "^0.2.10",
-    "@mastra/rag": "^0.1.23",
+    "@giphy/js-fetch-api": "^5.6.0",
+    "@giphy/react-components": "^10.0.1",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
@@ -46,7 +50,7 @@
     "class-validator": "^0.14.2",
     "cors": "^2.8.5",
     "csv-parse": "^5.6.0",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "graphql": "^16.11.0",
     "graphql-tools": "^9.0.18",

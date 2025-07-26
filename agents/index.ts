@@ -1,2 +1,3 @@
-export { default as demoAgent } from "./demo.ts";
-export { default as transcriberAgent } from "./transcriber.ts";
+export { default as transcriberAgent, transcriberFlow } from "./transcriber.ts";
+export { default as videoScriptProducerFlow } from "./video-script-producer.ts";
+export { default as videoVisualsProducerFlow } from "./video-visuals-producer.ts";

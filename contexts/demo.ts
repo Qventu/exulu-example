@@ -1,10 +1,10 @@
 import { ExuluContext } from "@exulu/backend";
 import { minilmEmbedder } from "../embedders/minilm-l6-v2.ts";
 
-const faqs = new ExuluContext({
-    id: "477af35c-18f1-47b9-8b45-0306e21145c1",
-    name: "Faq articles",
-    description: "1822 faq articles",
+const videoSeries = new ExuluContext({
+    id: "0cdaf29c-f69c-4afb-b4cc-fbc60651e9ad",
+    name: "OPEN AI Video Series",
+    description: "Generated video scripts and content for the OPEN AI video series",
     embedder: minilmEmbedder,
     active: true,
     configuration: {
@@ -12,21 +12,10 @@ const faqs = new ExuluContext({
     },
     fields: [
         {
-            name: "image",
-            type: "text"
-        },
-        {
-            name: "url",
-            type: "text"
+            name: "segments",
+            type: "json"
         }
     ],
-    rateLimit: {
-        name: "demoAgent",
-        rate_limit: {
-            limit: 100,
-            time: 60
-        }
-    },
 })
 
-export { faqs };
+export { videoSeries };
