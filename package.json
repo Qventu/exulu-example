@@ -7,16 +7,23 @@
     "node": "20.10.0"
   },
   "scripts": {
-    "dev": "tsx watch server.ts",
-    "init-db": "tsx init-db.ts",
-    "cli": "tsx cli.ts",
-    "evals": "tsx evals.ts",
-    "workers": "tsx watch workers.ts"
+    "dev:server": "tsx watch server.ts",
+    "dev:workers": "tsx watch workers.ts",
+    "build": "tsup",
+    "start:server": "node dist/server.js",
+    "start:workers": "node dist/workers.js",
+    "utils:initdb": "tsx ./utils/init-db.ts",
+    "utils:generateapikey": "tsx ./utils/generate-api-key.ts",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
     "@types/bun": "latest",
     "@types/node": "^22.14.0",
     "@types/pg": "^8.15.1",
+    "husky": "^9.1.7",
+    "tsup": "^8.5.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
@@ -34,6 +41,7 @@
     "@aws-sdk/client-s3": "^3.338.0",
     "@aws-sdk/client-sts": "^3.338.0",
     "@aws-sdk/s3-request-presigner": "^3.338.0",
+    "@exulu/backend": "^1.5.0",
     "@giphy/js-fetch-api": "^5.6.0",
     "@giphy/react-components": "^10.0.1",
     "@types/bcrypt": "^5.0.2",
@@ -48,6 +56,7 @@
     "body-parser": "^2.2.0",
     "bullmq": "^5.48.1",
     "class-validator": "^0.14.2",
+    "conventional-changelog-atom": "^5.0.0",
     "cors": "^2.8.5",
     "csv-parse": "^5.6.0",
     "dotenv": "^16.5.0",
@@ -59,6 +68,7 @@
     "jose": "^6.0.10",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
+    "link": "^2.1.1",
     "mongodb": "^6.15.0",
     "multer": "^1.4.5-lts.2",
     "next-auth": "^4.24.11",

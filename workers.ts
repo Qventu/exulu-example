@@ -1,3 +1,3 @@
-import {exulu} from "./exulu.ts";
+import {exulu} from "./server";
 
 export default await exulu.bullmq.workers.create()

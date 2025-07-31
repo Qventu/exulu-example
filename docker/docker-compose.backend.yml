@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  exulu-backend:
+    build:
+      context: ..
+      dockerfile: Dockerfile.backend
+      args:
+        NODE_ENV: ${NODE_ENV:-prod}
+    container_name: exulu-backend
+    ports:
+      - "9001:9001"
+    env_file:
+      - ../.env
+    environment:
+      - NODE_ENV=${NODE_ENV:-prod}
+      - PORT=9001
+    volumes:
+      # Mount source code for development mode
+      - ../src:/app/src:ro
+      - ../server.ts:/app/server.ts:ro
+    restart: unless-stopped
+    networks:
+      - exulu-network
+
+networks:
+  exulu-network:
+    driver: bridge

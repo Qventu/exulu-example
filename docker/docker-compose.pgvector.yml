@@ -1,0 +1,22 @@
+services:
+  exulu-pgvector:
+    image: pgvector/pgvector:pg17 # PostgreSQL with pgvector support
+    container_name: exulu-pgvector
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: exulu
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - exulu-network
+
+networks:
+  exulu-network:
+    driver: bridge
+
+volumes:
+  pgdata: # Stores data outside the container to ensure persistence

@@ -1,0 +1,19 @@
+version: '3.7'
+
+# Start this from the root of the project
+# so the .env file is found.
+
+services:
+  exulu-frontend:
+    image: ghcr.io/qventu/exulu-frontend:latest
+    container_name: exulu-frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ../.env
+    networks:
+      - exulu-network
+
+networks:
+  exulu-network:
+    driver: bridge

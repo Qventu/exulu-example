@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  exulu-workers:
+    build:
+      context: ..
+      dockerfile: Dockerfile.workers
+    container_name: exulu-workers
+    ports:
+      - "9002:9002"
+    environment:
+      - NODE_ENV=${NODE_ENV:-prod}
+      - PORT=9002
+    volumes:
+      # Mount source code for development mode
+      - ../src:/app/src
+      - ../workers.ts:/app/workers.ts
+    restart: unless-stopped
+    networks:
+      - exulu-network
+
+networks:
+  exulu-network:
+    driver: bridge

@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  exulu-minio:
+    container_name: exulu-minio
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z # S3 compatible object storage
+    command: server --console-address ":9001" /data
+    ports:
+      - "9020:9000"
+      - "9010:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - miniodata:/data
+    networks:
+      - exulu-network
+
+networks:
+  exulu-network:
+    driver: bridge
+
+volumes:
+  miniodata: # Stores data outside the container to ensure persistence

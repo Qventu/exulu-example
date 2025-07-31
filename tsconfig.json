@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     // Environment setup & latest features
-    "lib": ["ESNext"],
-    "target": "ESNext",
+    "lib": ["ES2022"],
+    "target": "ES2022",
     "module": "ESNext",
     "esModuleInterop": true,
     "moduleDetection": "force",
@@ -10,11 +10,10 @@
     "allowJs": true,
     "noImplicitAny": false,
     // Bundler mode
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "verbatimModuleSyntax": true,
-    "noEmit": true,
+    "outDir": "./dist",
+    "noEmit": false,
 
     // Best practices
     "strict": true,
@@ -26,8 +25,9 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
+    "baseUrl": ".",
     "paths": {
-      "@EXULU_CONTEXTS": ["./contexts/index"]
+      "@EXULU_CONTEXTS": ["src/contexts/index"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "custom.d.ts"],
