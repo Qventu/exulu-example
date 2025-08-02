@@ -4,6 +4,7 @@ FROM node:20.10.0-slim
 
 # Define build argument for NODE_ENV
 ARG NODE_ENV=prod
+ARG NPM_TOKEN
 
 # Echo NODE_ENV for debugging
 RUN echo "Building with NODE_ENV: $NODE_ENV"

@@ -15,6 +15,7 @@ services:
     env_file:
       - .env
     environment:
+      - NPM_TOKEN=${NPM_TOKEN}
       - NODE_ENV=${NODE_ENV:-prod}
       - PORT=9001
     volumes:
