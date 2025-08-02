@@ -23,4 +23,4 @@ networks:
     driver: bridge
 
 volumes:
-  redisdata: # Stores data outside the container to ensure persistence
+  redisdata:   Stores data outside the container to ensure persistence
