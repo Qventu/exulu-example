@@ -8,6 +8,7 @@ ARG NPM_TOKEN
 
 # Echo NODE_ENV for debugging
 RUN echo "Building with NODE_ENV: $NODE_ENV"
+RUN echo "Building with NPM_TOKEN: $NPM_TOKEN"
 
 # Set working directory
 WORKDIR /app
