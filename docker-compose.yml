@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile.backend
       args:
         NODE_ENV: ${NODE_ENV:-prod}
+        NPM_TOKEN: ${NPM_TOKEN}
     container_name: exulu-backend
     labels:
       - "traefik.enable=true"
@@ -91,10 +92,14 @@ services:
   exulu-workers:
     build:
       dockerfile: Dockerfile.workers
+      args:
+        NODE_ENV: ${NODE_ENV:-prod}
+        NPM_TOKEN: ${NPM_TOKEN}
     container_name: exulu-workers
     ports:
       - "9002:9002"
     environment:
+      - NPM_TOKEN=${NPM_TOKEN}
       - NODE_ENV=${NODE_ENV:-prod}
       - PORT=9002
     volumes:
