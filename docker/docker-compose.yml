@@ -109,7 +109,7 @@ services:
 volumes:
   miniodata: # Stores data outside the container to ensure persistence
   pgdata: # Stores data outside the container to ensure persistence
-  redisdata:   Stores data outside the container to ensure persistence
+  redisdata: # Stores data outside the container to ensure persistence
   
 networks:
   exulu-network:
