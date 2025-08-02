@@ -3,7 +3,6 @@ version: '3.8'
 services:
   exulu-backend:
     build:
-      context: ..
       dockerfile: Dockerfile.backend
       args:
         NODE_ENV: ${NODE_ENV:-prod}
@@ -14,14 +13,14 @@ services:
     ports:
       - "9001:9001"
     env_file:
-      - ../.env
+      - .env
     environment:
       - NODE_ENV=${NODE_ENV:-prod}
       - PORT=9001
     volumes:
       # Mount source code for development mode
-      - ../src:/app/src:ro
-      - ../server.ts:/app/server.ts:ro
+      - ./src:/app/src:ro
+      - ./server.ts:/app/server.ts:ro
     restart: unless-stopped
     networks:
       - exulu-network
@@ -35,7 +34,7 @@ services:
     ports:
       - "3000:3000"
     env_file:
-      - ../.env
+      - .env
     networks:
       - exulu-network
 
@@ -90,7 +89,6 @@ services:
 
   exulu-workers:
     build:
-      context: ..
       dockerfile: Dockerfile.workers
     container_name: exulu-workers
     ports:
@@ -100,8 +98,8 @@ services:
       - PORT=9002
     volumes:
       # Mount source code for development mode
-      - ../src:/app/src
-      - ../workers.ts:/app/workers.ts
+      - ./src:/app/src
+      - ./workers.ts:/app/workers.ts
     restart: unless-stopped
     networks:
       - exulu-network
