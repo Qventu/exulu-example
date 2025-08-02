@@ -7,6 +7,9 @@ services:
   exulu-frontend:
     image: ghcr.io/qventu/exulu-frontend:latest
     container_name: exulu-frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.exulu-frontend.rule=Host(`exulu.localhost`)"
     ports:
       - "3000:3000"
     env_file:

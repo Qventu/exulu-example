@@ -73,10 +73,10 @@ git pull git@github.com:Qventu/exulu-example.git
 
 | Configuration | Command |
 |---------------|---------|
-| Backend + PgVector | `NODE_ENV=dev docker compose -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml up --build -d` |
-| Frontend + Backend + PgVector | `NODE_ENV=dev docker compose -f ./docker/docker-compose.frontend.yml -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml up --build -d` |
-| Frontend + Backend + PgVector + Redis + Workers | `NODE_ENV=dev docker compose -f ./docker/docker-compose.frontend.yml -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml -f ./docker/docker-compose.redis.yml -f ./docker/docker-compose.workers.yml up --build -d` |
-| Frontend + Backend + PgVector + Redis + Workers + MinIO | `NODE_ENV=dev docker compose -f ./docker/docker-compose.frontend.yml -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml -f ./docker/docker-compose.redis.yml -f ./docker/docker-compose.workers.yml -f ./docker/docker-compose.minio.yml up --build -d` |
+| Backend + PgVector | `NODE_ENV=dev docker compose -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml -f ./docker/docker-compose.traefik.yml up --build -d` |
+| Frontend + Backend + PgVector | `NODE_ENV=dev docker compose -f ./docker/docker-compose.frontend.yml -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml -f ./docker/docker-compose.traefik.yml up --build -d` |
+| Frontend + Backend + PgVector + Redis + Workers | `NODE_ENV=dev docker compose -f ./docker/docker-compose.frontend.yml -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml -f ./docker/docker-compose.redis.yml -f ./docker/docker-compose.workers.yml -f ./docker/docker-compose.traefik.yml up --build -d` |
+| Frontend + Backend + PgVector + Redis + Workers + MinIO | `NODE_ENV=dev docker compose -f ./docker/docker-compose.frontend.yml -f ./docker/docker-compose.backend.yml -f ./docker/docker-compose.pgvector.yml -f ./docker/docker-compose.redis.yml -f ./docker/docker-compose.workers.yml -f ./docker/docker-compose.minio.yml -f ./docker/docker-compose.traefik.yml up --build -d` |
 
 > **⚠️ Important:**  
 > To run the containers in production mode, make sure to prefix your command with `NODE_ENV=prod`.  

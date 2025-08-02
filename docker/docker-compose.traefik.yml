@@ -1,0 +1,22 @@
+services:
+  traefik:
+    image: traefik:v3.5
+    container_name: exulu-traefik
+    command:
+      - "--api.insecure=true" # Set to false in production
+      - "--providers.docker=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=exulu-network"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    networks:
+      - exulu-network
+
+networks:
+  exulu-network:
+    driver: bridge

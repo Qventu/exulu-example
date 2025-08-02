@@ -8,6 +8,9 @@ services:
       args:
         NODE_ENV: ${NODE_ENV:-prod}
     container_name: exulu-backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.exulu-backend.rule=Host(`api.exulu.localhost`)"
     ports:
       - "9001:9001"
     env_file:
