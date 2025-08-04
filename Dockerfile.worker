@@ -25,9 +25,9 @@ COPY .npmrc.example ./
 # Create .npmrc from .npmrc.example and replace <<PUT_YOUR_TOKEN_HERE>> with the NPM_TOKEN build arg
 RUN sed "s/<<PUT_YOUR_TOKEN_HERE>>/${NPM_TOKEN}/g" .npmrc.example > .npmrc
 
+# Verify .npmrc is created and show its contents
 RUN cat .npmrc
-
-COPY .npmrc ./
+RUN ls -la .npmrc
 
 # Copy the start script early
 COPY start-worker.sh /app/start-worker.sh
