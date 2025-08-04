@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  exulu-backend:
+    build:
+      dockerfile: Dockerfile.backend
+      args:
+        NODE_ENV: ${NODE_ENV:-prod}
+        NPM_TOKEN: ${NPM_TOKEN}
+    container_name: exulu-backend
+    ports:
+      - "9001:9001"
+    env_file:
+      - .env
+    environment:
+      - NPM_TOKEN=${NPM_TOKEN}
+      - NODE_ENV=${NODE_ENV:-prod}
+      - PORT=9001
+    restart: unless-stopped

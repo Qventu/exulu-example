@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  exulu-minio:
+    container_name: exulu-minio
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z # S3 compatible object storage
+    command: server --console-address ":9001" /data
+    ports:
+      - "9020:9000"
+      - "9010:9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - miniodata:/data
+    networks:
+      - exulu-network
+
+  exulu-pgvector:
+    image: pgvector/pgvector:pg17 # PostgreSQL with pgvector support
+    container_name: exulu-pgvector
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: exulu
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - exulu-network
+
+  exulu-redis:
+    image: redis:7
+    container_name: exulu-redis
+    restart: always
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 10
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    volumes:
+      - redisdata:/data
+    networks:
+      - exulu-network
+
+volumes:
+  miniodata: # Stores data outside the container to ensure persistence
+  pgdata: # Stores data outside the container to ensure persistence
+  redisdata: # Stores data outside the container to ensure persistence
+  
+networks:
+  exulu-network:
+    driver: bridge
