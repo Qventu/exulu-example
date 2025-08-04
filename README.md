@@ -325,7 +325,7 @@ This project is licensed under a private license - see the [LICENSE](LICENSE) fi
 
 <div align="center">
 
-**Exulu** - Intelligence Management Platform
+**Exulu** - Intelligence Management Platform (IMP)
 
 *Empowering AI agents with enterprise-grade orchestration*
 
