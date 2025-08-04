@@ -24,7 +24,7 @@ services:
       - exulu-network
 
   exulu-frontend:
-    image: ghcr.io/qventu/exulu-frontend:latest
+    image: ghcr.io/qventu/exulu-frontend:1.1.2
     container_name: exulu-frontend
     labels:
       - "traefik.enable=true"

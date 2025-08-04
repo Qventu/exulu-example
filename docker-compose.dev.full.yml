@@ -25,7 +25,7 @@ services:
       - exulu-network
 
   exulu-frontend:
-    image: ghcr.io/qventu/exulu-frontend:latest
+    image: ghcr.io/qventu/exulu-frontend:1.1.2
     container_name: exulu-frontend
     ports:
       - "3000:3000"

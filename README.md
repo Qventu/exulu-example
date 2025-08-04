@@ -56,12 +56,33 @@ The IMP is organized into 5 main repositories:
 1. To create your first Exulu Application, pull the example repository from here:
 
 ```bash
-git pull git@github.com:Qventu/exulu-example.git
+git clone git@github.com:Qventu/exulu-example.git
 ```
 
-2. Now you need to copy the env.example to ".env" and setup the required variables such as your postgres connection, redis connection and authentication secret. The most basic requirement is a pgvector enabled postgres database. The docker-compose.dev.partial.yml and docker-compose.dev.full.yml include a pgvector enabled postgres service as well as a minio and redis instance. Redis is only needed if you want to run workers to process background jobs, which you can switch on or off in your ExuluApp class config property. Minio is a
+2. To keep the original reference to the example repo run:
+
+```bash
+git remote rename origin upstream
+```
+
+3. Now you can optionally connect the project to your own remote repo:
+
+```bash
+git remote add origin <your_repo>
+```
+
+4. If you run "git remote -v" you should now see the original repo listed as an upstream remote as well as your own repo as origin
+
+5. Now push to your remote by running (you might need to add --force if you have a pre-existing branch there). If your branch is not called main, but for example
+master, run "git checkout -b master" first and then "git push -u origin master" instead.
+
+```bash
+git push -u origin main 
+```
+
+6. Now you need to copy the env.example to ".env" and setup the required variables such as your postgres connection, redis connection and authentication secret. The most basic requirement is a pgvector enabled postgres database. The docker-compose.dev.partial.yml and docker-compose.dev.full.yml include a pgvector enabled postgres service as well as a minio and redis instance. Redis is only needed if you want to run workers to process background jobs, which you can switch on or off in your ExuluApp class config property. Minio is a
 s3 compatible object (file) storage and is also optional in case you want to enable users to upload and store files when they interact with agents.
-3. Next make sure to get a Exulu IMP license key and create a .npmrc file in your project root. It should look like this:
+7. Next make sure to get a Exulu IMP license key and create a .npmrc file in your project root. It should look like this:
 
 > ```bash
 > engine-strict=true
@@ -69,7 +90,7 @@ s3 compatible object (file) storage and is also optional in case you want to ena
 > //registry.npmjs.org/:_authToken=<your_license_key>
 > ```
 
-4. For the instance to work you need atleast a Postgres Database with PgVector enabled. We have provided several versions of docker compose files you can use to run Exulu easily on your local maschine, or when deployed to your server. Run these commands from the root folder of the project like this "NODE_ENV=dev docker compose -f ./docker-compose.dev.partial.yml -f ./docker-compose.frontend.yml up --build -d". Adjust which compose files you use based on your desired setup below:
+8. For the instance to work you need atleast a Postgres Database with PgVector enabled. We have provided several versions of docker compose files you can use to run Exulu easily on your local maschine, or when deployed to your server. Run these commands from the root folder of the project like this "NODE_ENV=dev docker compose -f ./docker-compose.dev.partial.yml -f ./docker-compose.frontend.yml up --build -d". Adjust which compose files you use based on your desired setup below:
 
 
 | Configuration | Command |
