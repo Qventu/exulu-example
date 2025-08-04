@@ -36,6 +36,7 @@ Exulu is a comprehensive AI agent management platform that enables you to create
 | 🎨 **Modern UI** | Next.js frontend with beautiful, responsive design |
 
 ---
+
 ## 🏗️ Architecture
 
 The Exulu Intelligence Management Platform (IMP) is organized into **6 main repositories**:
