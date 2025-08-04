@@ -1,0 +1,60 @@
+# Use Node.js 20.10.0 as specified in package.json. Important, use Debian as
+# the ONNX runtime dependencies are not available in Alpine.
+FROM node:20.10.0-slim
+
+# Define build argument for NODE_ENV
+ARG NODE_ENV=prod
+ARG NPM_TOKEN
+
+# Echo NODE_ENV for debugging
+RUN echo "Building with NODE_ENV: $NODE_ENV"
+RUN echo "Building with NPM_TOKEN: $NPM_TOKEN"
+
+# Set working directory
+WORKDIR /app
+
+# Install PM2 and tsx globally for production
+RUN npm install -g pm2 tsx
+
+# Copy package files
+COPY package*.json ./
+
+# Copy .npmrc.example first
+COPY .npmrc.example ./
+
+# Create .npmrc from .npmrc.example and replace <<PUT_YOUR_TOKEN_HERE>> with the NPM_TOKEN build arg
+RUN sed "s/<<PUT_YOUR_TOKEN_HERE>>/${NPM_TOKEN}/g" .npmrc.example > .npmrc
+
+# Verify .npmrc is created and show its contents
+RUN cat .npmrc
+RUN ls -la .npmrc
+
+# Copy the start script early
+COPY start-backend.sh /app/start-backend.sh
+RUN chmod +x /app/start-backend.sh
+RUN ls -la /app/start-backend.sh
+
+# Install all dependencies (including dev dependencies for build)
+# Ensure .npmrc is in the working directory and readable
+RUN pwd && ls -la && cat .npmrc && npm ci
+
+# Copy source code
+COPY . .
+
+# Build TypeScript for production
+RUN if [ "$NODE_ENV" = "prod" ]; then npm run build; fi
+
+# Remove dev dependencies to reduce image size (only in production)
+RUN if [ "$NODE_ENV" = "prod" ]; then npm prune --production; fi
+
+# Expose port
+EXPOSE 9001
+
+# Set environment variables
+ENV PORT=9001
+
+# Debug: show what's in the working directory
+RUN ls -la
+
+# Start the application
+CMD ["sh", "start-backend.sh"] 
