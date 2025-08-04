@@ -12,6 +12,13 @@ if [ "$NODE_ENV" = "dev" ]; then
 else
   echo "Starting in production mode..."
   npm run build
-  pm2 start dist/worker.js --name "exulu-worker"
+  # Check if pm2 process "exulu-worker" is running
+  if pm2 list | grep -q "exulu-worker"; then
+    echo "PM2 process 'exulu-worker' is already running. Restarting..."
+    pm2 restart exulu-worker
+  else
+    echo "PM2 process 'exulu-worker' is not running. Starting..."
+    pm2 start dist/worker.js --name "exulu-worker"
+  fi
   pm2 logs
 fi 
