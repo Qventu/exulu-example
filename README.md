@@ -126,6 +126,8 @@ engine-strict=true
 ```
 
 ### 6. Database Setup
+The @exulu/backend package exports a db.init() function. We added this for convenience to the init-db.ts so
+you can run that script to initialize the database like this:
 
 ```bash
 # Initialize database and create default user
