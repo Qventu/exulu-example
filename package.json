@@ -42,7 +42,7 @@
     "@aws-sdk/s3-request-presigner": "^3.338.0",
     "@browserbasehq/sdk": "^2.6.0",
     "@browserbasehq/stagehand": "^2.4.2",
-    "@exulu/backend": "^1.8.0",
+    "@exulu/backend": "^1.8.1",
     "@giphy/js-fetch-api": "^5.6.0",
     "@giphy/react-components": "^10.0.1",
     "@mendable/firecrawl-js": "^1.29.3",
