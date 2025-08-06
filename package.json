@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "engines": {
-    "node": "20.10.0"
+    "node": "22.17.1"
   },
   "scripts": {
     "dev:server": "tsx watch server.ts",
@@ -42,7 +42,7 @@
     "@aws-sdk/s3-request-presigner": "^3.338.0",
     "@browserbasehq/sdk": "^2.6.0",
     "@browserbasehq/stagehand": "^2.4.2",
-    "@exulu/backend": "^1.7.0",
+    "@exulu/backend": "^1.8.0",
     "@giphy/js-fetch-api": "^5.6.0",
     "@giphy/react-components": "^10.0.1",
     "@mendable/firecrawl-js": "^1.29.3",
