@@ -1,19 +1,20 @@
 import { ExuluChunkers, ExuluEmbedder } from "@exulu/backend";
-import { pipeline } from "@xenova/transformers";
+import { openai } from '@ai-sdk/openai';
+import { embedMany } from 'ai';
 
 export const exampleEmbedder = new ExuluEmbedder({
-  id: "28fa2488-97b2-474d-b790-9211a2179dea",
-  name: "minilm-l6-v2",
-  description: "MiniLM L6 V2 is a small language model that can be used for a variety of tasks (HF repo: https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2).",
-  vectorDimensions: 384,
-  maxChunkSize: 256 / 4,
+  id: "example_embedder",
+  name: "Example embedder",
+  description: "OpenAI text embedder small.",
+  vectorDimensions: 1536,
+  maxChunkSize: 500,
   queue: undefined,
   chunker: async (inputs, maxChunkSize) => {
 
     if (!inputs.description) {
       throw new Error("No content for item.")
     }
-    
+
     const content = inputs.description;
 
     const chunker = await ExuluChunkers.sentence.create({
@@ -33,28 +34,28 @@ export const exampleEmbedder = new ExuluEmbedder({
         index,
       }))
     }
+    
   },
   generateEmbeddings: async (inputs) => {
-    const { item } = inputs;
-    const extractor = await pipeline(
-      "feature-extraction",
-      "Xenova/all-MiniLM-L6-v2"
-    );
-    const response = await extractor(
-      inputs.chunks.map((chunk) => chunk.content),
-      { pooling: "mean", normalize: true }
-    );
 
-    const vectors = response.tolist();
-    console.log("vectors", vectors?.length)
+    const { item } = inputs;
+
+    // 'embeddings' is an array of embedding objects (number[][]).
+    // It is sorted in the same order as the input values.
+    const { embeddings } = await embedMany({
+      model: openai.textEmbeddingModel('text-embedding-3-small'),
+      values: inputs.chunks.map((chunk) => chunk.content)
+    });
+
     return {
       id: item.id,
-      chunks: vectors.map((vector, index) => ({
+      chunks: embeddings.map((vector, index) => ({
         content: inputs.chunks[index]?.content || "",
         index,
-        vector: vector
+        vector
       }))
     }
+
   }
 })
 
