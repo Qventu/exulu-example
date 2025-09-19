@@ -8,8 +8,21 @@ export const exulu = new ExuluApp();
 
 const start = async () => {
   const server = await exulu.create({
+    fileUploads: {
+      s3region: process.env.COMPANION_S3_REGION,
+      s3key: process.env.COMPANION_S3_KEY,
+      s3secret: process.env.COMPANION_S3_SECRET,
+      s3Bucket: process.env.COMPANION_S3_BUCKET,
+      s3endpoint: process.env.COMPANION_S3_ENDPOINT,
+    },
+    telemetry: {
+      enabled: false,
+    },
     config: {
       workers: {
+        telemetry: {
+          enabled: false,
+        },
         enabled: false,
       },
       MCP: {
@@ -22,11 +35,8 @@ const start = async () => {
     ],
     agents: [
       exampleAgent
-    ],
-    workflows: []
+    ]
   })
-
-  console.log("Server created");
   if (!server) {
     throw new Error("Failed to create Exulu server.");
   }
@@ -38,8 +48,6 @@ const start = async () => {
     return;
   });
 
-  server.listen(9001, () => {
-    console.log(`Exulu is listening on port ${9001}.`);
-  });
+  server.listen(9001, () => {});
 }
 start();
