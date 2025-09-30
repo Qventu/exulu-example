@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Exulu Logo](frontend/public/exulu_logo.svg)
+![Exulu Logo](frontend/public/logo.svg)
 
 **A powerful platform for creating, managing, and orchestrating AI agents with enterprise-grade features**
 
@@ -75,13 +75,10 @@ s3 compatible object (file) storage and is also optional in case you want to ena
 | Configuration | Command |
 |---------------|---------|
 | docker-compose.dev.full.yml | `Will run the backend, frontend, minio, redis and postgres in docker containers sharing a network. Adjust your .env file to use the appropriate aliases inside the docker network. The backend service will mount and watch the files to enable auto-reload when something changes.` |
-| docker-compose.dev.partial.yml | `Runs postgres, redis and minio only. You can then run your implementation of Exulu using "npm run dev:server" and "npm run dev:worker" respectively (if you need a worker). If you also need a frontend, run the "docker-compose.frontend.yml" as well (you can combine multiple compose files using the -f flag).` |
+| docker-compose.dev.partial.yml | `Runs postgres, redis and minio only. You can then run your implementation of Exulu using "npm run dev:server" and "npm run dev:worker" respectively (make sure to use the correct node version 22.17.1) (if you need a worker). If you also need a frontend, run the "docker-compose.frontend.yml" as well (you can combine multiple compose files using the -f flag).` |
 | docker-compose.prod.full.yml | `Will run the backend, frontend, minio, redis and postgres in docker containers sharing a network, but without mounting local files for the backend / worker.` |
 | docker-compose.backend.prod.yml | `Just your Exulu backend implementation ready for production. Doesn't include a postgres, redis or minio container so you need to provision those yourself.` |
 | docker-compose.worker.prod.yml | `Just your Exulu worker implementation ready for production. Doesn't include a postgres, redis or minio container so you need to provision those yourself.` |
-
-
-// TODO describe setting up a worker.ts file for spawning workers
 
 > **⚠️ Important:**  
 > To run the containers in production mode, make sure to prefix your command with `NODE_ENV=prod`.  
@@ -230,6 +227,123 @@ Create `.env` files in both `frontend/` and `backend/` directories. Use the `.en
 > you will need to update the docker-compose and Dockerfiles
 > accordingly.
 > ```
+
+### Configuring open telemetry for logging and tracing
+Exulu comes with an easy to use OTEL integration using Signoz by default (an opensource telemetry stack
+that provides a clickhouse OLAP database, OTEL collector and UI for checking traces in one easy to use
+developer experience). 
+
+To switch it on, in your ExuluApp instance set the
+config object for telemetry to true. You can do this seperately for workers (if you are using those)
+the backend itself and your MCP server (if you enabled it). We highly recommend configuring OTEL 
+and switching it on to make it easier to track performance of your deployments and debug issues.
+
+```typescript
+  export const exulu = new ExuluApp();
+
+  const server = await exulu.create({
+    config: {
+      telemetry: {
+        enabled: true // <--
+      },
+      workers: {
+        telemetry: {
+          enabled: true  // <--
+        },
+        enabled: false,
+      },
+      MCP: {
+        enabled: true,
+        telemetry: {
+          enabled: true
+        }
+      }
+    },
+    contexts,
+    tools: [
+      ...tools
+    ],
+    agents: [
+      exampleAgent
+    ]
+  })
+  
+```
+
+After switching this on, you need to make sure you setup your Signoz instance, you can either use
+Signoz Cloud, or the self-hosted version.
+
+The backend, MCP and workers will send telemetry to the collector which is automatically setup by Signoz.
+The collector is then responsible for forwarding the telemtry in the right format to your configured 
+telemetry backend (Hyperdx) to persist and visualize the telemetry.
+
+To run your own Signoz instance locally or on your server, you can follow the guide by signoz here:
+https://signoz.io/docs/install/docker/
+
+At the time of writing the installation is quite easy, you basically copy the open source git repo:
+
+```bash
+git clone -b main https://github.com/SigNoz/signoz.git && cd signoz/deploy/
+```
+
+And then run: 
+```bash
+docker compose up -d --remove-orphans
+```
+
+Great, to run your server with OTEL, run the following command:
+
+DEV:
+```bash
+dev:server:otel
+```
+```bash
+dev:worker:otel
+```
+
+PROD:
+```bash
+start:server:otel
+```
+```bash
+start:worker:otel
+```
+
+> **⚠️ Important:**  
+> In the example project we have a "otel.ts" file which is the starting
+> script to start the telemetry instrumentation. It should look like the below
+> , if it is missing the above scripts wont run. You need to provide a SIGNOZ_TRACES_URL, SIGNOZ_LOGS_URL and
+> a SIGNOZ_ACCESS_TOKEN in your .env file for it to be configured. If you are running
+> your own local instance of Signoz this defaults to 
+> ```
+
+```typescript
+import { ExuluOtel } from "@exulu/backend";
+const otel = ExuluOtel.create({
+    SIGNOZ_TRACES_URL: process.env.SIGNOZ_TRACES_URL!,
+    SIGNOZ_LOGS_URL: process.env.SIGNOZ_LOGS_URL!,
+    SIGNOZ_ACCESS_TOKEN: process.env.SIGNOZ_ACCESS_TOKEN!
+});
+otel.start();
+```
+
+Ofcourse you could always create your own custom otel instrumentation and start script. The Exulu
+example is just an easy way to get started. As long as you enable telemetry for the backend, workers
+or MCP and initialize your own OTEL client before starting the server your OTEL implementation should
+pick up all the trace spans that are used within Exulu automatically.
+
+As the ExuluOtel.create() method returns the NodeSDK instrumentation instance, you can call
+.start() to start it and .shutdown() on it to gracefully stop the OTEL instrumentation anywhere you like.
+
+#### Storage / server requirements for telemetry using Hyperdx
+Signoz by default sets the retention period to 7 days for logs and traces, and 30 days for 
+metrics. To change this, navigate to the General tab on the Settings page of SigNoz UI.
+
+Signoz uses ClickHouse as the OLAP database, this makes up most of the data, so that’s
+the only real storage concern. In most cases it needs about 60GB of space for one month of logs.
+
+The system is quite efficient, so a relatively cheap server (2 CPUs, 4 GB memory) is enough to 
+handle the traffic from Clickhouse in most cases.
 
 ### Development Guidelines
 

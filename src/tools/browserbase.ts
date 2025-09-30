@@ -50,7 +50,7 @@ async function createAuthSession(contextId: string): Promise<{ url: string, id: 
 }
 
 const createSession = new ExuluTool({
-    id: `1234-5178-9423-4267`,
+    id: `create_browserbase_session`,
     type: "function",
     name: "Create a browserbase session.",
     description: `
@@ -58,16 +58,21 @@ const createSession = new ExuluTool({
     the session id as a JSON object. A browserbase session is a headless browser
     that can be used to to visit websites and perform actions.
     `,
+    config: [],
     execute: async () => {
         const { id } = await createContext();
-        return await createAuthSession(id);
+        const result = await createAuthSession(id);
+        return {
+            result: result.url
+        };
     },
 })
 
 const askChatgpt = new ExuluTool({
-    id: `1234-5178-9423-4268`,
+    id: `ask_chatgpt_browserbase`,
     type: "function",
     name: "ChatGPT browserbase operation.",
+    config: [],
     inputSchema: z.object({
         session: z.string().describe("The session id of the browserbase session."),
         question: z.string().describe("The question to ask ChatGPT."),
@@ -98,7 +103,7 @@ const askChatgpt = new ExuluTool({
         console.log(answer)
         await stagehand.close();
         return {
-            answer
+            result: answer
         };
     },
 })
