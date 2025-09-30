@@ -8,17 +8,17 @@ export const exulu = new ExuluApp();
 
 const start = async () => {
   const server = await exulu.create({
-    fileUploads: {
-      s3region: process.env.COMPANION_S3_REGION,
-      s3key: process.env.COMPANION_S3_KEY,
-      s3secret: process.env.COMPANION_S3_SECRET,
-      s3Bucket: process.env.COMPANION_S3_BUCKET,
-      s3endpoint: process.env.COMPANION_S3_ENDPOINT,
-    },
-    telemetry: {
-      enabled: false,
-    },
     config: {
+      telemetry: {
+        enabled: false,
+      },
+      fileUploads: {
+        s3region: process.env.COMPANION_S3_REGION as string,
+        s3key: process.env.COMPANION_S3_KEY as string,
+        s3secret: process.env.COMPANION_S3_SECRET as string,
+        s3Bucket: process.env.COMPANION_S3_BUCKET as string,
+        s3endpoint: process.env.COMPANION_S3_ENDPOINT as string,
+      },
       workers: {
         telemetry: {
           enabled: false,

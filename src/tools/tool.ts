@@ -6,7 +6,7 @@ const exampleTool = new ExuluTool({
     name: "Example Tool",
     description: "Description of example tool.",
     inputSchema: z.object({
-        query: z.string(),
+        query: z.string().describe("The query to the tool."),
     }),
     type: "function",
     config: [],
