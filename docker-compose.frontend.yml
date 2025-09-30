@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   exulu-frontend:
-    image: ghcr.io/qventu/exulu-frontend:1.2.0
+    image: ghcr.io/qventu/exulu-frontend:1.5.2
     container_name: exulu-frontend
     ports:
       - "3000:3000"
