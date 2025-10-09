@@ -1,9 +1,10 @@
 import { db } from "@exulu/backend"
-import { exulu } from "server"
+import { exulu } from "./exulu"
 
 const init = async () => {
+    const app = await exulu();
     await db.init({
-        contexts: exulu.contexts
+        contexts: app.contexts
     })
     // Important to exit here to avoid hanging the 
     // process of this script in deployments.
