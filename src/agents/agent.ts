@@ -1,8 +1,8 @@
 import { ExuluAgent } from "@exulu/backend";
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 const exampleAgent = new ExuluAgent({
-    id: "example_agent_d239",
+    id: "example_agent",
     name: "Example Agent",
     description: "Description of example agent.",
     type: "agent",
@@ -17,7 +17,14 @@ const exampleAgent = new ExuluAgent({
     config: {
         name: "example-agent",
         instructions: "",
-        model: openai("gpt-4o"),
+        model: {
+            create: ({ apiKey }) => {
+                const openai = createOpenAI({
+                    apiKey: apiKey,
+                })
+                return openai.languageModel("gpt-4o")
+            },
+        }
     }
 })
 

@@ -49,7 +49,6 @@ The IMP is organized into 5 main repositories:
 - **ExuluContext**: Vectorized knowledge sources agents can search through and use in their reasoning and response
 - **ExuluWorkflow**: Predefined agent interaction patterns
 - **ExuluEmbedder**: Defines embedding models
-- **ExuluEval**: Defines evaluations that can be run on agents
 
 ## 🚀 Getting Started
 
