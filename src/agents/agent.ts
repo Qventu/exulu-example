@@ -14,7 +14,6 @@ const exampleAgent = new ExuluAgent({
         audio: [],
         video: [],
     },
-    evals: [],
     config: {
         name: "example-agent",
         instructions: "",

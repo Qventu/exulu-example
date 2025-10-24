@@ -1,5 +1,5 @@
-import { llmsTxt } from "./llms-txt";
+import { exampleContext } from "./context";
 
 export const contexts = {
-    llmsTxt
+    exampleContext
 }

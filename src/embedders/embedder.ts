@@ -37,7 +37,7 @@ export const exampleEmbedder = new ExuluEmbedder({
         index,
       }))
     }
-    
+
   },
   generateEmbeddings: async (inputs) => {
 
