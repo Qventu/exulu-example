@@ -1,8 +1,16 @@
 import type { ExuluTool } from "@exulu/backend";
-import exampleTool from "./tool";
+import { createSession, askChatgpt } from "./browserbase";
+import { sitemap, scrape, llmsText, extract } from "./firecrawl";
+import { perplexitySearch } from "./perplexity";
 
 const tools: ExuluTool[] = [
-    exampleTool
+    createSession,
+    askChatgpt,
+    sitemap,
+    scrape, 
+    llmsText,
+    extract,
+    perplexitySearch
 ]
 
 export default tools;

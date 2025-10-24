@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Exulu Logo](frontend/public/exulu_logo.svg)
+![Exulu Logo](frontend/public/logo.svg)
 
 **A powerful platform for creating, managing, and orchestrating AI agents with enterprise-grade features**
 

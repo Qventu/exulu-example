@@ -9,7 +9,7 @@ export const exulu = async (): Promise<ExuluApp> => {
     if (instance) {
         return instance;
     }
-
+    
     instance = new ExuluApp();
     instance = await instance.create({
         config: {
@@ -28,7 +28,7 @@ export const exulu = async (): Promise<ExuluApp> => {
                 telemetry: {
                     enabled: false,
                 },
-                enabled: true
+                enabled: true,
             },
             MCP: {
                 enabled: true,
