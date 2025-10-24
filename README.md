@@ -52,7 +52,7 @@ The IMP is organized into 4 main repositories:
 ### Prerequisites
 
 Before you begin, make sure you have:
-- Node.js 22.17.0 (we recommend using [nvm](https://github.com/nvm-sh/nvm))
+- Node.js 22.18.0 (we recommend using [nvm](https://github.com/nvm-sh/nvm))
 - Docker (for running local services such as Postgres and Redis)
 - An Exulu IMP license key for the backend (available from your account at [partners.exulu.com](https://partners.exulu.com)) or via your license partner
 
