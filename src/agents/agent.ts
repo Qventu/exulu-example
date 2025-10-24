@@ -4,6 +4,7 @@ import { createOpenAI } from "@ai-sdk/openai";
 const exampleAgent = new ExuluAgent({
     id: "example_agent",
     name: "Example Agent",
+    provider: "openai",
     description: "Description of example agent.",
     type: "agent",
     capabilities: {

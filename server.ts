@@ -1,42 +1,10 @@
 import { type Request, type Response } from "express";
-import { ExuluApp } from "@exulu/backend";
-import { contexts } from "./src/contexts/index";
-import { exampleAgent } from "./src/agents/index";
-import tools from "./src/tools/index";
-
-export const exulu = new ExuluApp();
+import { exulu } from "./exulu";
 
 const start = async () => {
-  const server = await exulu.create({
-    config: {
-      telemetry: {
-        enabled: false,
-      },
-      fileUploads: {
-        s3region: process.env.COMPANION_S3_REGION as string,
-        s3key: process.env.COMPANION_S3_KEY as string,
-        s3secret: process.env.COMPANION_S3_SECRET as string,
-        s3Bucket: process.env.COMPANION_S3_BUCKET as string,
-        s3endpoint: process.env.COMPANION_S3_ENDPOINT as string,
-      },
-      workers: {
-        telemetry: {
-          enabled: false,
-        },
-        enabled: false,
-      },
-      MCP: {
-        enabled: true,
-      }
-    },
-    contexts,
-    tools: [
-      ...tools
-    ],
-    agents: [
-      exampleAgent
-    ]
-  })
+  const app = await exulu();
+  const server = await app.express.init();
+
   if (!server) {
     throw new Error("Failed to create Exulu server.");
   }

@@ -1,3 +1,9 @@
-import {exulu} from "./server";
+import {exulu} from "./exulu";
 
-exulu.bullmq.workers.create()
+const worker = async () => {
+  const app = await exulu();
+  const worker = await app.bullmq.workers.create();
+  return worker;
+}
+
+worker();

@@ -36,7 +36,7 @@
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.17",
     "@ai-sdk/openai": "^2.0.27",
-    "@exulu/backend": "^1.25.0",
+    "@exulu/backend": "^1.25.5",
     "ai": "^5.0.47",
     "conventional-changelog-atom": "^5.0.0",
     "dotenv": "^16.5.0",

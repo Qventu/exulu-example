@@ -12,7 +12,10 @@ export const exampleEmbedder = new ExuluEmbedder({
   chunker: async (inputs, maxChunkSize) => {
 
     if (!inputs.description) {
-      throw new Error("No content for item.")
+      return {
+        item: inputs,
+        chunks: []
+      }
     }
 
     const content = inputs.description;
