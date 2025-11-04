@@ -7,6 +7,7 @@ services:
       args:
         NODE_ENV: ${NODE_ENV:-prod}
         NPM_TOKEN: ${NPM_TOKEN}
+        BUILD_ID: ${GIT_COMMIT_SHA:-unknown}
     container_name: exulu-worker
     ports:
       - "9002:9002"
