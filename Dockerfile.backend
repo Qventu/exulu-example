@@ -5,8 +5,8 @@ FROM node:22.18.0-slim
 # Define build argument for NODE_ENV
 ARG NODE_ENV=prod
 ARG NPM_TOKEN
-ARG CACHE_BUSTER
-RUN echo "Cache bust value: $CACHE_BUSTER"
+ARG CACHE_BUSTER_VALUE
+RUN echo "Cache bust value: $CACHE_BUSTER_VALUE"
 
 # Echo NODE_ENV for debugging
 RUN echo "Building with NODE_ENV: $NODE_ENV"
