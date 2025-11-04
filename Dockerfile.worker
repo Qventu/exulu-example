@@ -35,6 +35,7 @@ RUN chmod +x /app/start-worker.sh
 RUN ls -la /app/start-worker.sh
 
 # Install all dependencies (including dev dependencies for build)
+ENV HUSKY=0
 RUN npm ci
 
 # Copy source code
