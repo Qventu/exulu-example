@@ -37,7 +37,7 @@ RUN ls -la /app/start-backend.sh
 # Install all dependencies (including dev dependencies for build)
 # Ensure .npmrc is in the working directory and readable
 ENV HUSKY=0
-RUN pwd && ls -la && cat .npmrc && npm ci
+RUN pwd && ls -la && cat .npmrc && npm ci --ignore-scripts
 
 # Copy source code
 COPY . .
