@@ -2,9 +2,9 @@ version: '3.8'
 
 services:
   exulu-frontend:
-    image: ghcr.io/qventu/exulu-frontend:1.5.2
+    image: ghcr.io/qventu/exulu-frontend:latest
     container_name: exulu-frontend
     ports:
-      - "3001:3000"
+      - "3000:3000"
     env_file:
       - .env

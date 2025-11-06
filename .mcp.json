@@ -1,0 +1,11 @@
+{
+    "mcpServers": {
+      "exulu-mcp-server-example-agent": {
+        "type": "http",
+        "url": "http://localhost:9001/mcp/9956b60f-63aa-40d0-ba65-1d375d429a6a",
+        "headers": {
+          "Authorization": "Bearer ${PRIVATE_EXULU_TOKEN}"
+        }
+      }
+    }
+  }
