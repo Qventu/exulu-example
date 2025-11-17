@@ -73,6 +73,8 @@ engine-strict=true
 //registry.npmjs.org/:_authToken=<your_license_key>
 ```
 
+IMPORTANT: replace <your_license_key> with a valid npm token (ask for a token at your partner manager)
+
 ### Step 3: Set Up Environment Variables
 
 Copy the example environment file and configure it for your setup.
@@ -117,7 +119,7 @@ On first run, initialize the PostgreSQL database tables (this needs to be done a
 as this will update columns based on your defined fields and generate indexes if needed).
 
 ```bash
-npm run init-db
+npm run utils:initdb
 ```
 
 This will also create a default admin user. **Save the generated login credentials and API key** that are printed to the console - you won't be able to retrieve the API key again. If you run the frontend as well you can login by default using admin@exulu.com / admin (we recommend changing
