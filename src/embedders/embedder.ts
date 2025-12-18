@@ -55,7 +55,8 @@ export const exampleEmbedder = new ExuluEmbedder({
       chunks: embeddings.map((vector, index) => ({
         content: inputs.chunks[index]?.content || "",
         index,
-        vector
+        vector,
+        metadata: {}
       }))
     }
 

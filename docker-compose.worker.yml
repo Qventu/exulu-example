@@ -3,6 +3,7 @@ version: '3.8'
 services:
   exulu-worker:
     build:
+      context: .
       dockerfile: Dockerfile.worker
       args:
         NODE_ENV: ${NODE_ENV:-prod}

@@ -16,7 +16,10 @@ const exampleContext = new ExuluContext({
         description: "Example Source",
         config: {
             schedule: "*/1 * * * *", // every minute
-            queue: ExuluQueues.register("example_source_queue").use()
+            queue: ExuluQueues.register("example_source_queue", {
+                worker: 1,
+                queue: 1,
+            }, 1).use()
         },
         execute: async (inputs: any) => {
             console.log("[EXULU] executing example source", inputs);
