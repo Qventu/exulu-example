@@ -1,40 +1,21 @@
-import { ExuluContext, ExuluQueues } from "@exulu/backend";
-import { exampleEmbedder } from "../embedders/embedder";
+import { ExuluContext } from "@exulu/backend";
+import impKnowledgeEmbedder from "../embedders/embedder";
 
-const exampleContext = new ExuluContext({
-    id: "example_context",
-    name: "Example context",
-    description: "Example context",
-    embedder: exampleEmbedder,
+const impKnowledgeContext = new ExuluContext({
+    id: "imp_knowledge_context",
+    name: "Intelligence Management Platform (IMP) Knowledge context",
+    description: "Intelligence Management Platform (IMP) Knowledge context, includes frequently asked questions, feature descriptions and other relevant information for the IMP application.",
+    embedder: impKnowledgeEmbedder,
     active: true,
     rateLimit: undefined,
     queryRewriter: undefined,
     resultReranker: undefined,
-    sources: [{
-        id: "example_source",
-        name: "Example Source",
-        description: "Example Source",
-        config: {
-            schedule: "*/1 * * * *", // every minute
-            queue: ExuluQueues.register("example_source_queue", {
-                worker: 1,
-                queue: 1,
-            }, 1).use()
-        },
-        execute: async (inputs: any) => {
-            console.log("[EXULU] executing example source", inputs);
-            return [];
-        }
-    }],
+    sources: [],
     configuration: {
-        calculateVectors: "always"
+        calculateVectors: "always",
+        maxRetrievalResults: 20
     },
-    fields: [
-        {
-            name: "json",
-            type: "json"
-        }
-    ],
+    fields: [],
 })
 
-export { exampleContext };
+export { impKnowledgeContext };
