@@ -34,8 +34,10 @@ RUN apt-get update && apt-get install -y \
 # Set working directory
 WORKDIR /app
 
-# Install PM2 and tsx globally for production
-RUN npm install -g pm2 tsx
+# Install PM2, tsx, and docx globally for production.
+# docx is required at runtime by the built-in docx skill (skill scripts
+# require('docx') from the global node_modules).
+RUN npm install -g pm2 tsx docx
 
 # Copy package files
 COPY package*.json ./
