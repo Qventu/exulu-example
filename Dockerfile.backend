@@ -12,6 +12,25 @@ RUN echo "Cache bust value: $CACHE_BUSTER_VALUE"
 RUN echo "Building with NODE_ENV: $NODE_ENV"
 RUN echo "Building with NPM_TOKEN: $NPM_TOKEN"
 
+# Install Python and system dependencies for docling and the built-in docx skill.
+# pandoc, libreoffice, and poppler-utils are required by the docx skill at runtime.
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    tesseract-ocr \
+    poppler-utils \
+    pandoc \
+    libreoffice \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    libgl1 \
+    && rm -rf /var/lib/apt/lists/*
+
 # Set working directory
 WORKDIR /app
 
@@ -49,6 +68,9 @@ RUN if [ "$NODE_ENV" = "prod" ]; then npm run build; fi
 
 # Remove dev dependencies to reduce image size (only in production)
 RUN if [ "$NODE_ENV" = "prod" ]; then npm prune --production; fi
+
+# Setup Python virtual environment and install Python dependencies
+RUN npx @exulu/backend setup-python
 
 # Expose port
 EXPOSE 9001
