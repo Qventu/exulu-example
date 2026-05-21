@@ -1,9 +1,9 @@
-import { db } from "@exulu/backend"
+import { ExuluDatabase } from "@exulu/backend"
 import { exulu } from "./exulu"
 
 const init = async () => {
     const app = await exulu();
-    await db.init({
+    await ExuluDatabase.init({
         contexts: app.contexts
     })
     // Important to exit here to avoid hanging the 
