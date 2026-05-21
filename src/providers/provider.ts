@@ -1,11 +1,11 @@
-import { ExuluAgent } from "@exulu/backend";
+import { ExuluProvider } from "@exulu/backend";
 import { createOpenAI } from "@ai-sdk/openai";
 
-const exampleAgent = new ExuluAgent({
-    id: "example_agent",
-    name: "Example Agent",
+const exampleProvider = new ExuluProvider({
+    id: "example_provider",
+    name: "Example Provider",
     provider: "openai",
-    description: "Description of example agent.",
+    description: "Description of example provider.",
     type: "agent",
     capabilities: {
         text: true,
@@ -28,4 +28,4 @@ const exampleAgent = new ExuluAgent({
     }
 })
 
-export default exampleAgent;
+export default exampleProvider;

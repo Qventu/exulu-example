@@ -1,5 +1,5 @@
 import { contexts } from "./src/contexts/index";
-import { exampleAgent } from "./src/agents/index";
+import { exampleProvider } from "./src/providers/index";
 import tools from "./src/tools/index";
 import { ExuluApp } from "@exulu/backend";
 
@@ -38,8 +38,8 @@ export const exulu = async (): Promise<ExuluApp> => {
         tools: [
             ...tools
         ],
-        agents: [
-            exampleAgent
+        providers: [
+            exampleProvider
         ]
     })
     return instance;

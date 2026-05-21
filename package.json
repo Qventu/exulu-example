@@ -9,12 +9,12 @@
   "scripts": {
     "dev:server": "tsx watch server.ts",
     "dev:server:otel": "tsx watch --import otel.ts server.ts",
-    "dev:worker": "tsx watch worker.ts",
+    "dev:worker": "NODE_OPTIONS='--max-old-space-size=8192' tsx watch worker.ts",
     "dev:worker:otel": "tsx watch --import otel.ts worker.ts",
     "build": "tsup",
     "start:server": "node dist/server.js",
     "start:server:otel": "node --import dist/otel.js dist/server.js",
-    "start:worker": "node dist/worker.js",
+    "start:worker": "NODE_OPTIONS='--max-old-space-size=8192' node dist/worker.js",
     "start:worker:otel": "node --import dist/otel.js dist/worker.js",
     "utils:initdb": "tsx init-db.ts",
     "prepare": "husky"
@@ -34,8 +34,9 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^2.0.17",
+    "@ai-sdk/google-vertex": "^4.0.28",
     "@ai-sdk/openai": "^2.0.27",
-    "@exulu/backend": "^1.45.0",
+    "@exulu/backend": "^1.57.0",
     "ai": "^5.0.47",
     "conventional-changelog-atom": "^5.0.0",
     "dotenv": "^16.5.0",

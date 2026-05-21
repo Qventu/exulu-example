@@ -34,7 +34,7 @@ Exulu is a comprehensive AI agent management platform that enables you to create
 The IMP is organized into 4 main repositories:
 
 1. Backend: NPM package that includes the Exulu IMP server with endpoints for agents, contexts, jobs, users, roles and workflows.
-2. Frontend: application available as a Docker container.
+2. Frontend: application available as a Docker container as well as a npm package.
 3. Example: example Exulu implementation you can use to get started including docker reference files for things like postgres, redis and minio (https://github.com/Qventu/exulu-example).
 4. CLI: command-line interface tools available as an NPM package (npm i @exulu/cli).
 
