@@ -10,7 +10,7 @@ services:
         NPM_TOKEN: ${NPM_TOKEN}
     container_name: exulu-backend
     ports:
-      - "9241:9241"
+      - "9001:9001"
     env_file:
       - .env
     volumes:
@@ -18,7 +18,7 @@ services:
     environment:
       - NPM_TOKEN=${NPM_TOKEN}
       - NODE_ENV=${NODE_ENV:-prod}
-      - PORT=9241
+      - PORT=9001
     # bwrap (used by @anthropic-ai/sandbox-runtime for skill sandboxing) needs
     # to create user namespaces. Docker's default seccomp profile AND the
     # default AppArmor profile on Ubuntu hosts both block the `unshare` and
