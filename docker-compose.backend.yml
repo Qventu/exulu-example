@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  selise-backend:
+  exulu-backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
       args:
         NODE_ENV: ${NODE_ENV:-prod}
         NPM_TOKEN: ${NPM_TOKEN}
-    container_name: selise-backend
+    container_name: exulu-backend
     ports:
       - "9241:9241"
     env_file:

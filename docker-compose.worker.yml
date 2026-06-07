@@ -1,14 +1,14 @@
 version: '3.8'
 
 services:
-  selise-worker:
+  exulu-worker:
     build:
       context: .
       dockerfile: Dockerfile.worker
       args:
         NODE_ENV: ${NODE_ENV:-prod}
         NPM_TOKEN: ${NPM_TOKEN}
-    container_name: selise-worker
+    container_name: exulu-worker
     ports:
       - "9241:9241"
     volumes:
