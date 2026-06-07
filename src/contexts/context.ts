@@ -7,7 +7,6 @@ const impKnowledgeContext = new ExuluContext({
     description: "Intelligence Management Platform (IMP) Knowledge context, includes frequently asked questions, feature descriptions and other relevant information for the IMP application.",
     embedder: impKnowledgeEmbedder,
     active: true,
-    rateLimit: undefined,
     queryRewriter: undefined,
     resultReranker: undefined,
     sources: [],

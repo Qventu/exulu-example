@@ -2,16 +2,25 @@
 import { ExuluContext } from "@exulu/backend";
 
 // src/embedders/embedder.ts
-import { ExuluChunkers, ExuluEmbedder } from "@exulu/backend";
-import { openai } from "@ai-sdk/openai";
+import { ExuluChunkers, ExuluEmbedder, ExuluQueues } from "@exulu/backend";
+import { createOpenAI } from "@ai-sdk/openai";
 import { embedMany } from "ai";
-var exampleEmbedder = new ExuluEmbedder({
-  id: "example_embedder",
-  name: "Example embedder",
-  description: "OpenAI text embedder small.",
+var impKnowledgeQueue = ExuluQueues.register("imp_knowledge_queue", {
+  worker: 20,
+  queue: 20
+}, 4, 100).use();
+var impKnowledgeEmbedder = new ExuluEmbedder({
+  id: "imp_knowledge_embedder",
+  name: "Intelligence Management Platform (IMP) Knowledge embedder",
+  description: "Intelligence Management Platform (IMP) Knowledge embedder, embeds the knowledge context for the IMP application.",
   vectorDimensions: 1536,
   maxChunkSize: 500,
-  queue: void 0,
+  queue: impKnowledgeQueue,
+  config: [{
+    name: "openai_api_key",
+    description: "OpenAI API key",
+    default: void 0
+  }],
   chunker: async (inputs, maxChunkSize) => {
     if (!inputs.description) {
       return {
@@ -40,8 +49,14 @@ var exampleEmbedder = new ExuluEmbedder({
       }))
     };
   },
-  generateEmbeddings: async (inputs) => {
+  generateEmbeddings: async (inputs, config) => {
     const { item } = inputs;
+    if (!config.openai_api_key) {
+      throw new Error("OpenAI API key is required, please set it in the embedder configuration.");
+    }
+    const openai = createOpenAI({
+      apiKey: config.openai_api_key
+    });
     const { embeddings } = await embedMany({
       model: openai.textEmbeddingModel("text-embedding-3-small"),
       values: inputs.chunks.map((chunk) => chunk.content)
@@ -51,43 +66,44 @@ var exampleEmbedder = new ExuluEmbedder({
       chunks: embeddings.map((vector, index) => ({
         content: inputs.chunks[index]?.content || "",
         index,
-        vector
+        vector,
+        metadata: {}
       }))
     };
   }
 });
+var embedder_default = impKnowledgeEmbedder;
 
 // src/contexts/context.ts
-var exampleContext = new ExuluContext({
-  id: "example_context",
-  name: "Example context",
-  description: "Example context",
-  embedder: exampleEmbedder,
+var impKnowledgeContext = new ExuluContext({
+  id: "imp_knowledge_context",
+  name: "Intelligence Management Platform (IMP) Knowledge context",
+  description: "Intelligence Management Platform (IMP) Knowledge context, includes frequently asked questions, feature descriptions and other relevant information for the IMP application.",
+  embedder: embedder_default,
   active: true,
+  queryRewriter: void 0,
+  resultReranker: void 0,
+  sources: [],
   configuration: {
-    calculateVectors: "always"
+    calculateVectors: "always",
+    maxRetrievalResults: 20
   },
-  fields: [
-    {
-      name: "json",
-      type: "json"
-    }
-  ]
+  fields: []
 });
 
 // src/contexts/index.ts
 var contexts = {
-  exampleContext
+  impKnowledgeContext
 };
 
-// src/agents/agent.ts
-import { ExuluAgent } from "@exulu/backend";
-import { createOpenAI } from "@ai-sdk/openai";
-var exampleAgent = new ExuluAgent({
-  id: "example_agent",
-  name: "Example Agent",
+// src/providers/provider.ts
+import { ExuluProvider } from "@exulu/backend";
+import { createOpenAI as createOpenAI2 } from "@ai-sdk/openai";
+var exampleProvider = new ExuluProvider({
+  id: "example_provider",
+  name: "Example Provider",
   provider: "openai",
-  description: "Description of example agent.",
+  description: "Description of example provider.",
   type: "agent",
   capabilities: {
     text: true,
@@ -101,15 +117,15 @@ var exampleAgent = new ExuluAgent({
     instructions: "",
     model: {
       create: ({ apiKey }) => {
-        const openai2 = createOpenAI({
+        const openai = createOpenAI2({
           apiKey
         });
-        return openai2.languageModel("gpt-4o");
+        return openai.languageModel("gpt-4o");
       }
     }
   }
 });
-var agent_default = exampleAgent;
+var provider_default = exampleProvider;
 
 // src/tools/tool.ts
 import { ExuluTool } from "@exulu/backend";
@@ -173,8 +189,8 @@ var exulu = async () => {
     tools: [
       ...tools_default
     ],
-    agents: [
-      agent_default
+    providers: [
+      provider_default
     ]
   });
   return instance;

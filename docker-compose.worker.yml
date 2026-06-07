@@ -1,18 +1,28 @@
 version: '3.8'
 
 services:
-  exulu-worker:
+  selise-worker:
     build:
       context: .
       dockerfile: Dockerfile.worker
       args:
         NODE_ENV: ${NODE_ENV:-prod}
         NPM_TOKEN: ${NPM_TOKEN}
-    container_name: exulu-worker
+    container_name: selise-worker
     ports:
-      - "9002:9002"
+      - "9241:9241"
+    volumes:
+      - ../files/vertex.json:/app/vertex.json
     environment:
       - NPM_TOKEN=${NPM_TOKEN}
       - NODE_ENV=${NODE_ENV:-prod}
-      - PORT=9002
+      - PORT=9241
+    # bwrap (used by @anthropic-ai/sandbox-runtime for skill sandboxing) needs
+    # to create user namespaces. Docker's default seccomp profile AND the
+    # default AppArmor profile on Ubuntu hosts both block the `unshare` and
+    # `mount` syscalls bwrap relies on. We drop both filters so bwrap can run;
+    # bwrap then enforces the actual sandbox.
+    security_opt:
+      - seccomp:unconfined
+      - apparmor:unconfined
     restart: unless-stopped
