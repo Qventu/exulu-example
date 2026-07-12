@@ -11,10 +11,11 @@ services:
     container_name: exulu-backend
     ports:
       - "9001:9001"
+      - "4000:4000" # Needed so a worker can directly connect to the litellm proxy
     env_file:
       - .env
     volumes:
-      - ../files/vertex.json:/app/vertex.json
+      - ../../files/vertex-auth.json:/app/vertex-auth.json
     environment:
       - NPM_TOKEN=${NPM_TOKEN}
       - NODE_ENV=${NODE_ENV:-prod}
@@ -28,3 +29,9 @@ services:
       - seccomp:unconfined
       - apparmor:unconfined
     restart: unless-stopped
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true

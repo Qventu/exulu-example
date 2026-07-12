@@ -1,5 +1,6 @@
-import { impKnowledgeContext } from "./context";
+import { exampleDocumentsContext, exampleTicketsContext } from "./context";
 
 export const contexts = {
-    impKnowledgeContext
-}
+    exampleTicketsContext,
+    exampleDocumentsContext
+}   

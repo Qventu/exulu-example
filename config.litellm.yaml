@@ -24,128 +24,67 @@ litellm_settings:
   request_timeout: 600    # raise Timeout error if call takes longer than 600 seconds. Default value is 6000seconds if not set
   set_verbose: False      # Switch off Debug Logging, ensure your logs do not have any debugging on
   json_logs: true         # Get debug logs in json format
-  max_budget: 3500 # (float) sets max budget as $3500 USD
+  max_budget: 500 # (float) sets max budget as $500 USD
   budget_duration: 30d # (str) frequency of reset - You can set duration as seconds ("30s"), minutes ("30m"), hours ("30h"), days ("30d").
   
 model_list:
-  # Each entry's `model_name` is what Exulu agents will reference in their
-  # `model` field after toggling LiteLLM on. Pick stable, human-friendly names.
-
-  - model_name: whisper
+  - model_name: gemini-embedding-001
     litellm_params:
-      model: whisper-1
-      api_key: os.environ/OPENAI_API_KEY
-    model_info:
-      type: speech_to_text # important: this filters them out of the catalog selection in the UI / admin API for regular inference
-      brand: "openai"
-      region: "eu"
-
-  - model_name: gpt-image-2 ### RECEIVED MODEL NAME ###
-    litellm_params: # all params accepted by litellm.image_generation()
-      model: azure/gpt-image-2 ### MODEL NAME sent to `litellm.image_generation()` ###
-      api_base: https://exulu-sweden-resource.services.ai.azure.com
-      api_key: "os.environ/AZURE_API_KEY_SWEDEN" # does os.getenv("AZURE_API_KEY_EU")
-      # /v1/images/edits on Azure requires api_version 2025-04-01-preview or
-      # later — older versions return 404 "Resource not found" for the
-      # edits endpoint. Generations work without this; edits do not.
-      api_version: "2025-04-01-preview"
-    model_info:
-      brand: "openai"
-      region: "eu"
-      type: image_generation
-      # Capability declarations required by Exulu for image-generation models.
-      # See docs/superpowers/specs/2026-05-31-in-chat-image-generation-design.md.
-      sizes: ["1024x1024", "1024x1536", "1536x1024", "auto"]
-      qualities: ["auto", "low", "medium", "high"]
-      supports_edit: true
-      max_n: 10
-
-  - model_name: tts
-    litellm_params:
-      model: openai/tts-1
-      api_key: os.environ/OPENAI_API_KEY
-    model_info:
-      type: text_to_speech # important: this filters them out of the catalog selection in the UI / admin API for regular inference
-      brand: "openai"
-      region: "eu"
-  
-  - model_name: gpt-5.4
-    litellm_params:
-      model: azure/gpt-5.4
-      api_base: https://exulu-resource.openai.azure.com/
-      api_version: "2023-05-15"
-      api_key: os.environ/AZURE_API_KEY # The `os.environ/` prefix tells litellm to read this from the env.
-    model_info:
-      brand: "openai"
-      region: "eu"
-
-  - model_name: gpt-5.4-mini
-    litellm_params:
-      model: azure/gpt-5.4
-      api_base: https://exulu-resource.openai.azure.com/
-      api_version: "2023-05-15"
-      api_key: os.environ/AZURE_API_KEY # The `os.environ/` prefix tells litellm to read this from the env.
-    model_info:
-      brand: "openai"
-      region: "eu"
-
-  - model_name: gpt-5.4-nano
-    litellm_params:
-      model: azure/gpt-5.4
-      api_base: https://exulu-resource.openai.azure.com/
-      api_version: "2023-05-15"
-      api_key: os.environ/AZURE_API_KEY # The `os.environ/` prefix tells litellm to read this from the env.
-    model_info:
-      brand: "openai"
-      region: "eu"
-
-  - model_name: qwen3-235b
-    litellm_params:
-      model: vertex_ai/qwen/qwen3-235b-a22b-instruct-2507-maas 
-      vertex_ai_project: "ai-open-490322"
-      vertex_ai_location: "eu"
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
+      model: vertex_ai/gemini-embedding-001
+      vertex_ai_project: "dx-newlift"
+      vertex_ai_location: "europe-west1" # gemini-embedding-001 not available in multi-region eu
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
     model_info:
       brand: "google"
       region: "eu"
-      active: false # Shows the model in the UI but in a disabled state
+      max_chunk_size: 1024
+      dimensionality: 1024
+      max_batch_size: 250
+      type: embedder
+
+  - model_name: cohere/rerank-v4.0-pro
+    litellm_params:
+      model: cohere/rerank-v4.0-pro
+      api_key: os.environ/COHERE_API_KEY
+    model_info:
+      type: reranker
+
+  - model_name: vertex-ocr
+    litellm_params:
+      model: vertex_ai/mistral-ocr-2505
+      vertex_ai_project: "dx-newlift"
+      vertex_ai_location: "europe-west4" # gemini-embedding-001 not available in multi-region eu
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
+    model_info:
+      mode: ocr
+      type: ocr
 
   - model_name: vertex-gemini-3.5-flash # Important: using this exact name is mandatory for the vertex api
     litellm_params:
       model: vertex_ai/gemini-3.5-flash
-      vertex_ai_project: "ai-open-490322"
+      vertex_ai_project: "dx-newlift"
       vertex_ai_location: "eu" # Important: gemini 3.5 flash only available in dedicated zone, not in multi-region eu
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
-    model_info:
-      brand: "google"
-      region: "eu" 
-
-  - model_name: gemini-3.1-flash-lite # Important: using this exact name is mandatory for the vertex api
-    litellm_params:
-      model: vertex_ai/gemini-3.1-flash-lite
-      vertex_ai_project: "ai-open-490322"
-      vertex_ai_location: "eu" # Important: gemini 3.1 flash lite only available in multi region eu, not in dedicated zone
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
-    model_info:
-      brand: "google"
-      region: "eu" 
-  
-  - model_name: vertex-gemini-2.5-pro # Important: using this exact name is mandatory for the vertex api
-    litellm_params:
-      model: vertex_ai/gemini-2.5-pro
-      vertex_ai_project: "ai-open-490322"
-      vertex_ai_location: "europe-west1" # Important: gemini 2.5 flash only available in dedicated zone, not in multi-region eu
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
     model_info:
       brand: "google"
       region: "eu"
 
+  - model_name: gemini-3.1-flash-lite # Important: using this exact name is mandatory for the vertex api
+    litellm_params:
+      model: vertex_ai/gemini-3.1-flash-lite
+      vertex_ai_project: "dx-newlift"
+      vertex_ai_location: "eu" # Important: gemini 3.1 flash lite only available in multi region eu, not in dedicated zone
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
+    model_info:
+      brand: "google"
+      region: "eu" 
+
   - model_name: vertex-gemini-2.5-flash # Important: using this exact name is mandatory for the vertex api
     litellm_params:
       model: vertex_ai/gemini-2.5-flash
-      vertex_ai_project: "ai-open-490322"
+      vertex_ai_project: "dx-newlift"
       vertex_ai_location: "europe-west1" # Important: gemini 2.5 flash only available in dedicated zone, not in multi-region eu
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
     model_info:
       brand: "google"
       region: "eu"
@@ -155,9 +94,9 @@ model_list:
       model: vertex_ai/claude-opus-4-7
       drop_params: true
       additional_drop_params: ["temperature"]
-      vertex_ai_project: "ai-open-490322"
-      vertex_ai_location: "eu"
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
+      vertex_ai_project: "dx-newlift"
+      vertex_ai_location: "europe-west1" # Important: gemini 2.5 flash only available in dedicated zone, not in multi-region eu
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
     model_info:
       brand: "anthropic"
       region: "eu"
@@ -165,9 +104,20 @@ model_list:
   - model_name: claude-sonnet-4-6* # Important: add a wildcard at the end because sometimes claude code appends a version number to the model name
     litellm_params:
       model: vertex_ai/claude-sonnet-4-6
-      vertex_ai_project: "ai-open-490322"
-      vertex_ai_location: "eu"
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
+      vertex_ai_project: "dx-newlift"
+      vertex_ai_location: "europe-west1" # Important: gemini 2.5 flash only available in dedicated zone, not in multi-region eu
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
+    model_info:
+      brand: "anthropic"
+      region: "eu"
+
+  - model_name: claude-sonnet-5* # Important: add a wildcard at the end because sometimes claude code appends a version number to the model name
+    litellm_params:
+      model: vertex_ai/claude-sonnet-5
+      vertex_ai_project: "dx-newlift"
+      vertex_ai_location: "europe-west1" # Important: gemini 2.5 flash only available in dedicated zone, not in multi-region eu
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
+      additional_drop_params: ["temperature"]
     model_info:
       brand: "anthropic"
       region: "eu"
@@ -175,13 +125,9 @@ model_list:
   - model_name: claude-haiku-4-5* # Important: add a wildcard at the end because sometimes claude code appends a version number to the model name
     litellm_params:
       model: vertex_ai/claude-haiku-4-5
-      vertex_ai_project: "ai-open-490322"
-      vertex_ai_location: "eu"
-      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH # os.environ["VERTEX_FILE_PATH_ENV_VAR"] = "/path/to/service_account.json"
+      vertex_ai_project: "dx-newlift"
+      vertex_ai_location: "europe-west1" # Important: gemini 2.5 flash only available in dedicated zone, not in multi-region eu
+      vertex_credentials: os.environ/VERTEX_CREDENTIALS_PATH
     model_info:
       brand: "anthropic"
       region: "eu"
-
-# Per-model rate limits and budgets are configured here in LiteLLM-native form.
-# See https://docs.litellm.ai/docs/proxy/users for budget configuration and
-# https://docs.litellm.ai/docs/proxy/rate_limit_tiers for rate limiting.

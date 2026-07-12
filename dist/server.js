@@ -1,46 +1,58 @@
 // src/contexts/context.ts
-import { ExuluContext } from "@exulu/backend";
+import { ExuluChunkers, ExuluContext, ExuluDocumentProcessor, ExuluQueues } from "@exulu/backend";
 
-// src/embedders/embedder.ts
-import { ExuluChunkers, ExuluEmbedder, ExuluQueues } from "@exulu/backend";
-import { createOpenAI } from "@ai-sdk/openai";
-import { embedMany } from "ai";
-var impKnowledgeQueue = ExuluQueues.register("imp_knowledge_queue", {
+// src/utils/index.ts
+var s3PathInfo = (path) => {
+  const match = path.match(/^([^/]+)\/(.+)\.([^./]+)(?:\/(.+))?$/);
+  if (!match) {
+    console.error("Invalid ID format");
+    return void 0;
+  }
+  const [, bucket, object, ext, generation] = match;
+  if (!bucket || !object || !ext) {
+    console.error("Missing S3 file id parts");
+    return void 0;
+  }
+  return {
+    bucket,
+    object,
+    ext,
+    generation
+  };
+};
+
+// src/contexts/context.ts
+var embeddingQueue = ExuluQueues.register("embedding_queue", {
   worker: 20,
   queue: 20
 }, 4, 100).use();
-var impKnowledgeEmbedder = new ExuluEmbedder({
-  id: "imp_knowledge_embedder",
-  name: "Intelligence Management Platform (IMP) Knowledge embedder",
-  description: "Intelligence Management Platform (IMP) Knowledge embedder, embeds the knowledge context for the IMP application.",
-  vectorDimensions: 1536,
-  maxChunkSize: 500,
-  queue: impKnowledgeQueue,
-  config: [{
-    name: "openai_api_key",
-    description: "OpenAI API key",
-    default: void 0
-  }],
-  chunker: async (inputs, maxChunkSize) => {
+var processingQueue = ExuluQueues.register("processing_queue", {
+  worker: 20,
+  queue: 20
+}, 4, 100).use();
+var createChunker = async () => {
+  return new ExuluChunkers.markdown();
+};
+var exampleTicketsContext = new ExuluContext({
+  id: "example_tickets_context",
+  name: "Example Tickets Context",
+  description: "Example Tickets Context, includes example tickets for the IMP application.",
+  embedder: {
+    model: "gemini-embedding-001",
+    queue: embeddingQueue
+  },
+  chunker: async (inputs, maxChunkSize, utils) => {
     if (!inputs.description) {
+      console.error("No description found in item", inputs);
       return {
         item: inputs,
         chunks: []
       };
     }
-    const content = inputs.description;
-    const chunker = await ExuluChunkers.sentence.create({
-      tokenizer: "gpt-3.5-turbo",
-      // Supports string identifiers or Tokenizer instance
-      chunkSize: maxChunkSize,
-      // Maximum tokens per chunk
-      chunkOverlap: maxChunkSize / 2,
-      // Overlap between chunks
-      minSentencesPerChunk: 1
-      // Minimum sentences per chunk
+    const chunker = await createChunker();
+    const chunks = await chunker.chunk(inputs.description, maxChunkSize, prefix, {
+      pageBreakTags: false
     });
-    const chunks = await chunker.chunk(content);
-    console.log("chunks", chunks);
     return {
       item: inputs,
       chunks: chunks.map((chunk, index) => ({
@@ -49,37 +61,6 @@ var impKnowledgeEmbedder = new ExuluEmbedder({
       }))
     };
   },
-  generateEmbeddings: async (inputs, config) => {
-    const { item } = inputs;
-    if (!config.openai_api_key) {
-      throw new Error("OpenAI API key is required, please set it in the embedder configuration.");
-    }
-    const openai = createOpenAI({
-      apiKey: config.openai_api_key
-    });
-    const { embeddings } = await embedMany({
-      model: openai.textEmbeddingModel("text-embedding-3-small"),
-      values: inputs.chunks.map((chunk) => chunk.content)
-    });
-    return {
-      id: item.id,
-      chunks: embeddings.map((vector, index) => ({
-        content: inputs.chunks[index]?.content || "",
-        index,
-        vector,
-        metadata: {}
-      }))
-    };
-  }
-});
-var embedder_default = impKnowledgeEmbedder;
-
-// src/contexts/context.ts
-var impKnowledgeContext = new ExuluContext({
-  id: "imp_knowledge_context",
-  name: "Intelligence Management Platform (IMP) Knowledge context",
-  description: "Intelligence Management Platform (IMP) Knowledge context, includes frequently asked questions, feature descriptions and other relevant information for the IMP application.",
-  embedder: embedder_default,
   active: true,
   queryRewriter: void 0,
   resultReranker: void 0,
@@ -90,42 +71,145 @@ var impKnowledgeContext = new ExuluContext({
   },
   fields: []
 });
+var exampleDocumentsContext = new ExuluContext({
+  id: "example_documents_context",
+  name: "Example Documents Context",
+  description: "Example Documents Context, includes example documents for the IMP application.",
+  embedder: {
+    model: "gemini-embedding-001",
+    queue: embeddingQueue
+  },
+  chunker: async (inputs, maxChunkSize, utils) => {
+    if (!inputs.markdown_s3key) {
+      console.error("No markdown_s3key found in item", inputs);
+      return {
+        item: inputs,
+        chunks: []
+      };
+    }
+    const key = inputs.markdown_s3key;
+    const url = await utils.storage.getPresignedUrl(key);
+    const response = await fetch(url);
+    const text = await response.text();
+    const json = JSON.parse(text);
+    const documentName = inputs.name || inputs.external_id || inputs.document_s3key || "";
+    const prefix2 = `
+        --- Document (Exulu ID: ${inputs.id}) ---
+        Document Name: ${documentName}
+        -------------------------`;
+    const chunker = await createChunker();
+    const content = `${json.map(
+      (page) => `${page.content} <page_break page=${page.page}>`
+    ).join("\n\n")}`;
+    const chunks = await chunker.chunk(content, maxChunkSize, prefix2, {
+      pageBreakTags: true
+    });
+    return {
+      item: inputs,
+      chunks: chunks.map((chunk, index) => ({
+        content: chunk.text,
+        index,
+        metadata: {
+          page: chunk.page,
+          pdf: inputs.document_s3key,
+          markdown: inputs.markdown_s3key
+        }
+      }))
+    };
+  },
+  active: true,
+  queryRewriter: void 0,
+  resultReranker: void 0,
+  sources: [],
+  configuration: {
+    calculateVectors: "manual",
+    maxRetrievalResults: 20
+  },
+  processor: {
+    name: "Document Processor",
+    description: "Takes PDF files and converts them to markdown, stores the markdown file in the item on the markdown field so it can be used for embedding.",
+    config: {
+      trigger: "always",
+      queue: processingQueue,
+      timeoutInSeconds: 60 * 40,
+      // 40 minutes, some documents are 200 pages, so this is a reasonable timeout
+      generateEmbeddings: true
+      // means embeddings will be generated after the processor has finished
+    },
+    filter: async ({ item, user, role, exuluConfig, utils }) => {
+      return item;
+    },
+    execute: async ({ item, user, utils }) => {
+      if (!item.document_s3key) {
+        console.error("No document_s3key found in item", item);
+        return item;
+      }
+      const pathInfo = s3PathInfo(item.document_s3key);
+      if (!pathInfo) {
+        console.error("Invalid document_s3key", item.document_s3key);
+        return item;
+      }
+      const sourceFileBucket = pathInfo.bucket;
+      const sourceFileObject = pathInfo.object;
+      const sourceFileExt = pathInfo.ext;
+      const sourceFileKey = `${sourceFileObject}.${sourceFileExt}`;
+      const key = item.document_s3key;
+      const url = await utils.storage.getPresignedUrl(key);
+      const array = await fetch(url).then((res) => res.arrayBuffer());
+      const buffer = Buffer.from(array);
+      const jsonFileKey = `${sourceFileObject}.json`;
+      const result = await ExuluDocumentProcessor.process({
+        file: buffer,
+        name: item.document_s3key,
+        config: {
+          processor: {
+            name: "mistral",
+            model: "vertex-ocr"
+          },
+          vlm: {
+            model: "vertex-gemini-2.5-flash",
+            concurrency: 40
+          }
+        }
+      });
+      const uploadedKey = await utils.storage.uploadFile(
+        Buffer.from(JSON.stringify(result)),
+        jsonFileKey,
+        "application/json" /* json */.toString(),
+        user,
+        {
+          sourceFile: sourceFileKey,
+          bucket: sourceFileBucket
+        }
+      );
+      const object = {
+        ...item,
+        markdown_s3key: uploadedKey
+      };
+      return object;
+    }
+  },
+  fields: [
+    {
+      name: "document",
+      type: "file",
+      allowedFileTypes: [".pdf"]
+    },
+    {
+      name: "markdown",
+      type: "file",
+      allowedFileTypes: [".md"],
+      editable: false,
+      calculated: true
+    }
+  ]
+});
 
 // src/contexts/index.ts
 var contexts = {
-  impKnowledgeContext
+  exampleTicketsContext,
+  exampleDocumentsContext
 };
-
-// src/providers/provider.ts
-import { ExuluProvider } from "@exulu/backend";
-import { createOpenAI as createOpenAI2 } from "@ai-sdk/openai";
-var exampleProvider = new ExuluProvider({
-  id: "example_provider",
-  name: "Example Provider",
-  provider: "openai",
-  description: "Description of example provider.",
-  type: "agent",
-  capabilities: {
-    text: true,
-    images: [],
-    files: [],
-    audio: [],
-    video: []
-  },
-  config: {
-    name: "example-agent",
-    instructions: "",
-    model: {
-      create: ({ apiKey }) => {
-        const openai = createOpenAI2({
-          apiKey
-        });
-        return openai.languageModel("gpt-4o");
-      }
-    }
-  }
-});
-var provider_default = exampleProvider;
 
 // src/tools/tool.ts
 import { ExuluTool } from "@exulu/backend";
@@ -189,9 +273,7 @@ var exulu = async () => {
     tools: [
       ...tools_default
     ],
-    providers: [
-      provider_default
-    ]
+    providers: []
   });
   return instance;
 };

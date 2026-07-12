@@ -38,9 +38,7 @@ export const exulu = async (): Promise<ExuluApp> => {
         tools: [
             ...tools
         ],
-        providers: [
-            exampleProvider
-        ]
+        providers: []
     })
     return instance;
 }
