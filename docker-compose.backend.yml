@@ -15,7 +15,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ../files/vertex.json:/app/vertex.json
+      - ../files/vertex-auth.json:/app/vertex-auth.json
     environment:
       - NPM_TOKEN=${NPM_TOKEN}
       - NODE_ENV=${NODE_ENV:-prod}
