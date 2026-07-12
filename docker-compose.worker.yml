@@ -12,7 +12,7 @@ services:
     ports:
       - "9002:9002"
     volumes:
-      - ../../files/vertex-auth.json:/app/vertex-auth.json
+      - ../../files/vertex.json:/app/vertex.json
     environment:
       - NPM_TOKEN=${NPM_TOKEN}
       - NODE_ENV=${NODE_ENV:-prod}
